@@ -1,0 +1,67 @@
+<!Doctype html>
+<html>
+<head>
+  <title>The Game Of Life</title>
+  <style>
+    * { margin:0; padding:0; font-family:sans-serif;}
+    html { background:#555; color:#fff; height:100%;}
+    body { height:100%; }
+    #progress { position:absolute; top:10px; left:10px; background:#00cc00; padding:10px; opacity:0.5; font-weight:bold; -moz-border-radius: 5px; -webkit-border-radius: 5px; text-shadow: #000 1px 1px 1px; }
+    #trigger { position:absolute; z-index:1000; width:100%; height:100%; background:transparent; cursor:pointer; }
+    #cells { height:100%;}
+    #cells table { width:100%; height:100%; }
+    .cell { background:#fff; color:#000; text-align:center; }
+    .cell.alive { background:#000; color:#fff; }
+  </style>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+  <script type="text/javascript">
+    var step = 1;
+    var state = <%= @state.to_json %>;
+
+    $(function() {
+      visualize();
+      trigger_evolve();
+    });
+
+    function trigger_evolve() {
+      window.setTimeout(evolve, 500);
+    }
+
+    function evolve() {
+      $.ajax({
+        url: "evolve",
+        type: "post",
+        dataType: "json",
+        data: {state: state},
+        success: function(new_state) {
+          state = new_state;
+          step++;
+          visualize();
+        },
+        complete: trigger_evolve
+      });
+    }
+
+    function visualize() {
+      var cell_style = "width:"+ 100/state[0].length+"%; height:"+100/state.length+"%;"
+      var tbl = $("<table cellpadding='0' cellspacing='0' border='0'>");
+      for (var y = 0; y < state.length; y++) {
+        tbl.append("<tr>");
+        for (var x = 0; x < state[y].length; x++) {
+          var cell_class = state[y][x] == 1 ? 'cell alive' : 'cell';
+          var cell_text = state[y][x] == 1 ? '&hearts;' : '&dagger;';
+          $("tr:last", tbl).append("<td class='"+cell_class+"' style='"+cell_style+"'>"+cell_text+"</td>");
+        }
+      } 
+      $("#cells").empty().append(tbl);
+      $("#progress").text(step);
+    }
+  </script>
+</head>
+<body>
+  <div id="trigger"></div>
+  <div id="progress">1</div>
+  <div id="cells"></div>
+</div>
+</body>
+</html>
