@@ -1,0 +1,1 @@
+All files are on github: http://github.com/jameskayn/game_of_life
