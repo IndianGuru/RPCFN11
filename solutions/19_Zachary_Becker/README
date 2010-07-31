@@ -1,0 +1,20 @@
+initialize function gives a few options. You can specify the dimensions
+of the board, and you can specify if you want the board to wrap around
+to the other side.
+
+evolve simply iterates though the state array and uses the rules to
+determine if it should change states.
+
+randomize_game_state is in a separate function, so it can easily be
+called if desired.
+
+is_alive returns false if you give it a cell off the board. Also you
+can specify an origin cell and check a cell's state relative to it with
+optional parameters.
+
+count_neighbours simply counts all the alive cells around a particular
+cell, using alive relative feature to simplify this.
+
+update_dimensions if you set the state to an arbitrary array, this 
+method can be called to properly set the width and height. It uses the
+smallest column height to avoid problems.
